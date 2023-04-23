@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Administrador</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Administrador</h2>
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#filas">Filas</a></li>
+        <li><a data-toggle="tab" href="#topicos">Tópicos</a></li>
+        <li><a data-toggle="tab" href="#clientes">Clientes</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="filas" class="tab-pane fade in active">
+          <h3>Gerenciamento de Filas</h3>
+          <form action="/admin/newqueue" method="post">
+            <div class="form-group">
+              <label for="queueSelect">Nova Fila:</label>
+              <select id="queueSelect" name="clientNameForQueue" class="form-control form-select-sm" aria-label="Default select example">
+                <option selected>Selecione um cliente sem fila</option>
+                {% for client in clients %}
+                  <option value="{{ client }}">{{ client }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-default">Adicionar Fila</button>
+          </form>
+          <br>
+          <ul class="list-group">
+            {% for queue in queues %}
+            <form action="/admin/deletequeue" method="post">
+              <li class="list-group-item d-flex justify-content-between align-items-center">        
+                <span class="text-left"><span class="badge badge-primary badge-pill fila-1">{{queue.msgs}}</span> {{queue.name}}</span>
+                <button type="submit" name="queueName" value="{{queue.name}}" class="close ml-auto" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+            </form> 
+            {% endfor %}
+          </ul> 
+        </div>
+        <div id="topicos" class="tab-pane fade">
+          <h3>Gerenciamento de Tópicos</h3>
+          <form action="/admin/newtopic" method="post">
+            <div class="form-group">
+              <label for="topico">Novo Tópico:</label>
+              <input type="text" name="newTopic" class="form-control" id="topico">
+            </div>
+            <button type="submit" class="btn btn-default">Adicionar Topico</button>
+          </form>
+          <br>
+          {% for topic in topics %}
+            <form action="/admin/deletetopic" method="post">
+              <li class="list-group-item d-flex justify-content-between align-items-center">        
+                {{topic.name}}
+                <button type="submit" name="topicName" value="{{topic.name}}" class="close ml-auto" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+            </form> 
+            {% endfor %}
+        </div>
+        <div id="clientes" class="tab-pane fade">
+          <h3>Gerenciamento de Clientes</h3>
+          <form method="post">
+            <div class="form-group">
+              <label for="cliente">Novo Cliente:</label>
+              <input type="text" name="newClientName" class="form-control" value="{{request.form['newClientName']}}">
+            </div>
+            <button type="submit" class="btn btn-default">Adicionar Cliente</button>
+          </form>
+          <br>
+          <form action="/admin/deleteclient" method="post">
+            <ul class="list-group">
+              {% for client in clients %}
+              <li class="list-group-item">
+                {{ client }}
+                <button type="submit" name="clientName" value="{{ client }}" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              </li>
+              {% endfor %}
+            </ul>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

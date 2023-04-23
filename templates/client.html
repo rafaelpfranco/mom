@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cliente</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Olá, {{clientName}}</h2>
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#listatopicos">Tópicos</a></li>
+        <li><a data-toggle="tab" href="#clientes">Chat com os clientes</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="listatopicos" class="tab-pane fade in active">
+            <h3>Listagem de tópicos</h3>
+            <br>
+            <form action="/client/{{ clientName }}/subtopic" method="post">
+              <div class="form-group">
+                <label for="topicSelect">Assinar tópico:</label>
+                <select id="topicSelect" name="topicSelect" class="form-control form-select-sm" aria-label="Default select example">
+                  <option selected>Selecione um tópico</option>
+                  {% for topic in topics %}
+                    <option name="topicNameAdd" value="{{ topic.name }}">{{ topic.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" class="btn btn-default">Assinar tópico</button>
+            </form>
+            <ul class="list-group">
+                  {% for topic in topicSub[clientName] %}
+                  <li class="list-group-item"> 
+                    <div class="card">
+                      <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#{{topic}}" aria-expanded="false" aria-controls="collapseTwo">
+                            {{topic}}
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="{{topic}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                        <div class="card-body">
+                          <ul class="list-group">
+                            <li class="list-group-item">
+                              <p></p>
+                            </li>
+                            <form id="message" method="post" action="/client/{{clientName}}/send/{{topic}}">
+                              <div class="form-group">
+                                <br>
+                                <label for="exampleFormControlTextarea1">Mensagem</label>
+                                <textarea class="form-control" name="inputMsg" rows="3"></textarea>
+                              </div>
+                              <button type="submit" onclick="handleForm()" class="btn btn-primary">Enviar</button>
+                            </form> 
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+            </ul>
+        </div>   
+        <div id="clientes" class="tab-pane fade">
+          <h3>Chat</h3>
+          <br>
+          <ul class="list-group">
+            {% for queue in queues %}
+            <li class="list-group-item"> 
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#{{queue.name}}" aria-expanded="false" aria-controls="collapseTwo">
+                      {{queue.name}}
+                    </button>
+                  </h5>
+                </div>
+                <div id="{{queue.name}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <div>{{msgs[clientName][queue.name]}}<br></div>
+                      </li>
+                      <form id="message" method="post" action="/client/{{clientName}}/send/{{queue['name']}}">
+                        <div class="form-group">
+                          <br>
+                          <label for="exampleFormControlTextarea1">Mensagem</label>
+                          <textarea class="form-control" name="inputMsg" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                      </form>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
